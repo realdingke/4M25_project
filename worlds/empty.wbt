@@ -1,0 +1,131 @@
+#VRML_SIM R2023a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/factory/containers/protos/WoodenBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/appearances/protos/BrushedAluminium.proto"
+
+WorldInfo {
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation -0.45135754146236373 0.672947527889816 0.5860187663138747 3.879404561884642
+  position 0.652536218222492 2.023424234593886 0.10256988971575635
+}
+TexturedBackground {
+  texture "factory"
+}
+TexturedBackgroundLight {
+}
+DEF area RectangleArena {
+  translation -0.257628 -4.44089e-16 -0.192172
+  rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0943951023931953
+  floorSize 2 2
+  floorTileSize 0.508 0.508
+  wallHeight 0.5
+  wallAppearance BrushedAluminium {
+    colorOverride 0.752941 0.74902 0.737255
+  }
+}
+WoodenBox {
+  hidden linearVelocity_0 1.3900984009293286e-17 -1.591615728102614e-15 -4.8766031498863985e-17
+  hidden angularVelocity_0 -3.996802888650562e-16 4.7410106559789605e-17 -2.664535259100379e-16
+  translation -0.39216973507162983 0.09980379999999951 0.5420719957683291
+  rotation 1.318690935120248e-13 -1 -8.34216686509467e-15 0.0026049615518022352
+  name "wooden box(2)"
+  size 0.2 0.2 0.2
+  mass 0.5
+}
+WoodenBox {
+  hidden linearVelocity_0 2.4431859329354513e-17 -1.7053025658242495e-15 -1.652285060368539e-17
+  hidden angularVelocity_0 -1.3322676295501876e-16 2.3356969532025077e-17 -1.332267629550187e-16
+  translation -0.5496511214402234 0.09980379999999983 -0.38430324989754444
+  rotation 1.1347173476401591e-13 -1 -2.115453790829772e-15 0.002627478570300495
+  name "wooden box(3)"
+  size 0.2 0.2 0.2
+  mass 0.5
+}
+WoodenBox {
+  hidden linearVelocity_0 5.583460994847583e-18 -1.6484591469634418e-15 -4.6771703068733394e-17
+  hidden angularVelocity_0 -1.332267629550187e-16 -5.300207462725841e-17 0
+  translation 0.1375152771262054 0.09980379999999996 -0.788401206151961
+  rotation 3.032579908172773e-14 -1 3.4286644471750445e-15 0.008625527724317733
+  name "wooden box(1)"
+  size 0.2 0.2 0.2
+  mass 0.5
+}
+DEF epuck E-puck {
+  hidden position_0_0 1.2799056747951036
+  hidden position_0_1 2.5597498955265046
+  hidden linearVelocity_0 -0.0599088635589435 1.056197093305396e-06 0.004373964386127551
+  hidden angularVelocity_0 -0.0005487933916916265 0.7019734961327816 6.873412978717546e-05
+  hidden rotation_1 0 1 0 1.2799056747951036
+  hidden linearVelocity_1 -0.041700276522175415 7.875491980913216e-06 0.00300822042236072
+  hidden angularVelocity_1 0.1487196707167186 0.710355751520785 1.994587806188609
+  hidden rotation_2 4.381191420859428e-09 0.9999999999999998 -1.4632431930306766e-08 2.559749889892131
+  hidden linearVelocity_2 -0.07813228977780552 2.101241273035903e-05 0.005692540391815321
+  hidden angularVelocity_2 0.28951406317189454 0.7267906954182405 3.9896455484050937
+  translation -0.180407118728625 -8.384048418473913e-05 0.200234717160714
+  rotation 0.030727851071814274 0.7071475048944269 0.7063980503158931 -3.080095438396515
+  controller "mapping"
+  supervisor TRUE
+  camera_width 50
+  camera_height 50
+  turretSlot [
+    InertialUnit {
+      rotation 0 1 0 3.14
+    }
+    DEF front_ds DistanceSensor {
+      translation 0 0 -0.045
+      rotation 0 1 0 1.5708
+      name "front_ds"
+      recognitionColors [
+        0 0 0
+      ]
+      lookupTable [
+        0 0 0
+        1.27 1.27 0
+      ]
+    }
+    DEF right_ds DistanceSensor {
+      translation 0.035 -0.01 -0.01
+      name "right_ds"
+      lookupTable [
+        0 0 0
+        1.27 1.27 0
+      ]
+    }
+    DEF left_ds DistanceSensor {
+      translation -0.035 -0.01 -0.01
+      rotation 0 1 0 3.14159
+      name "left_ds"
+      lookupTable [
+        0 0 0
+        1.27 1.27 0
+      ]
+    }
+    Camera {
+      translation 0 0 0.011
+      rotation 0 1 0 0
+      name "camera1"
+      recognitionColors [
+        1 1 0
+      ]
+      fieldOfView 1.57
+      width 256
+      height 256
+      recognition Recognition {
+      }
+    }
+  ]
+}
+WoodenBox {
+  hidden linearVelocity_0 1.2681987211399037e-17 -1.7053025658242199e-15 -1.2329516030890866e-17
+  hidden angularVelocity_0 2.1316282072803187e-16 8.782134851393855e-17 2.316467644531793e-23
+  translation -0.10697600000853617 0.0498037999999998 -0.28006997900517033
+  rotation 5.494198379799804e-09 1 -3.589328536852342e-10 7.244751900611688e-08
+  size 0.1 0.1 0.2
+  mass 0.5
+}
