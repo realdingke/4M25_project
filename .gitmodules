@@ -1,0 +1,3 @@
+[submodule "viso2"]
+	path = viso2
+	url = https://github.com/jamesh1999/viso2.git

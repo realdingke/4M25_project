@@ -270,7 +270,7 @@ def main():
             # cv.imwrite(img_dir + f"Image No.{StepCounter//20}.png", img)
             plt.imshow(img, interpolation='nearest')
             plt.axis('off')
-            plt.savefig(os.path.join(img_dir, f"Image No.{StepCounter//20}.png"), bbox_inches='tight', pad_inches=0)
+            plt.savefig(os.path.join(img_dir, f"image-0-{StepCounter//20}.png"), bbox_inches='tight', pad_inches=0)
             print(f"Image No.{StepCounter//20} at step {StepCounter} saved")
 
         if StepCounter > 2000:
