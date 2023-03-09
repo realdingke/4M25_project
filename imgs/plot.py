@@ -52,7 +52,7 @@ plt.plot(gt_pos[:PLOT_STEPS,0], gt_pos[:PLOT_STEPS,2], c='g', label="groundtruth
 plt.plot(vo_pos[:PLOT_STEPS,0], vo_pos[:PLOT_STEPS,2], c='b', label="VO")
 plt.axis('square')
 plt.xlim(-(FLOOR_SIZE[0]/2 + 0.5), FLOOR_SIZE[0]/2 + 0.5)
-plt.ylim(-(FLOOR_SIZE[0]/2 + 0.5), FLOOR_SIZE[0]/2 + 0.5)
+plt.ylim(-(FLOOR_SIZE[1]/2 + 0.5), FLOOR_SIZE[1]/2 + 0.5)
 plt.legend()
 
 os.chdir("..")
