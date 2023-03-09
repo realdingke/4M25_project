@@ -222,15 +222,15 @@ class DefaultController(object):
 
     def compute_left_speed(self, l_dist, r_dist):
         if l_dist < r_dist:
-            return max_speed*0.5
+            return max_speed*0.45
         else:
-            return max_speed
+            return max_speed*0.5
 
     def compute_right_speed(self, l_dist, r_dist):
         if l_dist < r_dist:
-            return max_speed
-        else:
             return max_speed*0.5
+        else:
+            return max_speed*0.45
         
 
 
@@ -293,6 +293,12 @@ def main():
     gt_position_array = []
     gt_orientation_array = []
 
+    ### get camera intrinsic matrix
+    K = np.array([[camera.getFocalDistance(), 0.0, camera.getWidth()/2],
+        [0.0, camera.getFocalDistance(), camera.getHeight()/2],
+        [0.0, 0.0, 1.0]])
+    print("camera intrinsic matrix is:", K)
+
     StepCounter = 0
     while robot.step(TIME_STEP) != -1:
 
@@ -320,6 +326,7 @@ def main():
             plt.imshow(img, interpolation='nearest')
             plt.axis('off')
             plt.savefig(os.path.join(img_dir, f"image-{FOV}-{StepCounter//20}.png"), bbox_inches='tight', pad_inches=0)
+
             print(f"Image No.{StepCounter//20} at step {StepCounter} saved")
 
         if StepCounter > 2000:
