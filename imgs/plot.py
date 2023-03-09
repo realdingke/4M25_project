@@ -17,6 +17,7 @@ gt_rot = np.array(list(map(lambda r: [r[0:3], r[3:6], r[6:9]], gt_rot)))
 
 # Read VO results
 vo_pos = [gt_pos[0] / CAMERA_HEIGHT]
+vo_rot = [gt_rot[0]]
 
 lines = open(f"out-{FOV}.txt").readlines()
 T_acc = np.identity(4)
@@ -31,6 +32,8 @@ for [pose, matches, inliers] in zip(lines[::3], lines[1::3], lines[2::3]):
     rot = T_acc[:3, :3]
 
     vo_pos.append(pos)
+    vo_rot.append(rot)
+
 vo_pos = np.array(vo_pos) * CAMERA_HEIGHT
 
 plt.plot(gt_pos[:PLOT_STEPS,0], gt_pos[:PLOT_STEPS,2])
