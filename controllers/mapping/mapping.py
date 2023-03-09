@@ -190,9 +190,35 @@ def face_north(ts):
             break
     dir = "North"
 
+class BraitenbergController(object):
+    def __init__(self, lds, rds, lm, rm):
+        rds.enable(timestep)
+        lds.enable(timestep)
+        self.lds = lds
+        self.rds = rds
 
-    
-class DefaultController(object):
+        lm.setPosition(float('inf'))
+        lm.setVelocity(0.0)
+        rm.setPosition(float('inf'))
+        rm.setVelocity(0.0)
+        self.lm = lm
+        self.rm = rm
+
+        self.WeightMatrix = np.array([0, 0.1, 0.1, 0]).reshape(2, 2)
+
+    def update(self):
+        # read sensors
+        left_dist = self.lds.getValue()
+        right_dist = self.rds.getValue()
+        dist_vec = np.array([left_dist, right_dist]).reshape(2, 1)
+
+        angular_velocities = self.WeightMatrix @ dist_vec
+
+        # actuate wheel motors
+        self.lm.setVelocity(angular_velocities[0])
+        self.rm.setVelocity(angular_velocities[1])
+
+class RuleBasedController(object):
     def __init__(self, lds, rds, lm, rm):
         rds.enable(timestep)
         lds.enable(timestep)
@@ -285,7 +311,7 @@ def main():
     left_motor = robot.getDevice('left wheel motor')
     right_motor = robot.getDevice('right wheel motor')
 
-    #CONTROLLER = DefaultController(lds, rds, left_motor, right_motor)
+    #CONTROLLER = RuleBasedController(lds, rds, left_motor, right_motor)
     CONTROLLER = KeyboardController(keyboard, left_motor, right_motor)
 
     os.chdir("../..")
