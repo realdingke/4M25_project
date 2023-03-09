@@ -23,7 +23,7 @@ void calibrationParameters(VisualOdometryMonoOmnidirectional::parameters* pParam
     // Taylor expansion of: r cot (r a)
     double a = M_PI * f / (180 * IMG_SIZE);
     pParams->omnidirectional_calib.length_pol = 8;
-    pParams->omnidirectional_calib.pol[0] = std::pow(a, -1.0);
+    pParams->omnidirectional_calib.pol[0] = M_PI * f / 180;//std::pow(a, -1.0);
     pParams->omnidirectional_calib.pol[1] = 0;
     pParams->omnidirectional_calib.pol[2] = std::pow(a, 1.0) / 3;
     pParams->omnidirectional_calib.pol[3] = 0;
@@ -47,6 +47,13 @@ void calibrationParameters(VisualOdometryMonoOmnidirectional::parameters* pParam
 
     pParams->omnidirectional_calib.height = IMG_SIZE;
     pParams->omnidirectional_calib.width = IMG_SIZE;
+
+    // Matcher params
+    pParams->match.match_radius = 60;
+    pParams->match.half_resolution = 0;
+
+    // Bucketing params
+    pParams->bucket.max_features = 6;
 }
 
 // Load as grayscale 8bit
@@ -76,7 +83,7 @@ Matrix processImage(VisualOdometryMonoOmnidirectional* pOdom, int step, cv::Mat*
 
 void fovSeries(int fov) {
     VisualOdometryMonoOmnidirectional::parameters params;
-    calibrationParameters(&params, 90);
+    calibrationParameters(&params, fov);
     VisualOdometryMonoOmnidirectional odom = VisualOdometryMonoOmnidirectional(params);
 
     std::stringstream ss;
@@ -94,7 +101,7 @@ void fovSeries(int fov) {
         nInliers = odom.getNumberOfInliers();
 
         for (int j = 0; j < 3; ++j)
-            for (int k = 0; k < 3; ++k) {
+            for (int k = 0; k < 4; ++k) {
                 output << m.val[j][k] << " ";
             }
         output << std::endl;

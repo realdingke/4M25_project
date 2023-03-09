@@ -1,6 +1,6 @@
 """mapping controller."""
 
-from controller import Robot, Supervisor, Camera, CameraRecognitionObject, InertialUnit, DistanceSensor, PositionSensor
+from controller import Robot, Supervisor, Camera, CameraRecognitionObject, InertialUnit, DistanceSensor, PositionSensor, Keyboard
 # import math
 import os
 import numpy as np
@@ -191,25 +191,87 @@ def face_north(ts):
             break
     dir = "North"
 
-def compute_left_speed(l_dist, r_dist):
-    if l_dist < r_dist:
-        return max_speed*0.5
-    else:
-        return max_speed
 
-def compute_right_speed(l_dist, r_dist):
-    if l_dist < r_dist:
-        return max_speed
-    else:
-        return max_speed*0.5
+    
+class DefaultController(object):
+    def __init__(self, lds, rds, lm, rm):
+        rds.enable(timestep)
+        lds.enable(timestep)
+        self.lds = lds
+        self.rds = rds
 
+        lm.setPosition(float('inf'))
+        lm.setVelocity(0.0)
+        rm.setPosition(float('inf'))
+        rm.setVelocity(0.0)
+        self.lm = lm
+        self.rm = rm
+
+    def update(self):
+        # read sensors
+        left_dist = self.lds.getValue()
+        right_dist = self.rds.getValue()
+
+        # compute behavior (user functions)
+        left = self.compute_left_speed(left_dist, right_dist)
+        right = self.compute_right_speed(left_dist, right_dist)
+
+        # actuate wheel motors
+        self.lm.setVelocity(left)
+        self.rm.setVelocity(right)
+
+    def compute_left_speed(self, l_dist, r_dist):
+        if l_dist < r_dist:
+            return max_speed*0.5
+        else:
+            return max_speed
+
+    def compute_right_speed(self, l_dist, r_dist):
+        if l_dist < r_dist:
+            return max_speed
+        else:
+            return max_speed*0.5
+        
+
+
+class KeyboardController(object):
+    def __init__(self, kb, lm, rm, vel=6.0, turn=0.5):
+        self.kb = kb
+
+        lm.setPosition(float('inf'))
+        lm.setVelocity(0.0)
+        rm.setPosition(float('inf'))
+        rm.setVelocity(0.0)
+        self.lm = lm
+        self.rm = rm
+
+        self.cmd = {
+            ord('W'): (vel, vel),
+            ord('A'): (-turn, turn),
+            ord('D'): (turn, -turn),
+            ord('S'): (-vel, -vel),
+            ord('Q'): (0, 0)
+        }
+
+    def update(self):
+        key = self.kb.getKey()
+        if key in self.cmd:
+            left, right = self.cmd[key]
+            self.lm.setVelocity(left)
+            self.rm.setVelocity(right)
 
 def main():
     TIME_STEP = 32
+    FOV = 120
+
+
 
     # robot = Robot()
     supervisor = Supervisor()  # create Supervisor instance
     robot_node = supervisor.getFromDef('epuck')
+
+    keyboard = Keyboard()
+    keyboard.enable(TIME_STEP)
 
     # left_sensor = robot.getDevice("left_sensor")
     # right_sensor = robot.getDevice("right_sensor")
@@ -217,15 +279,12 @@ def main():
     # right_sensor.enable(TIME_STEP)
     lds = robot.getDevice('left_ds')
     rds = robot.getDevice('right_ds')
-    fds.enable(timestep)
-    lds.enable(timestep)
 
     left_motor = robot.getDevice('left wheel motor')
     right_motor = robot.getDevice('right wheel motor')
-    left_motor.setPosition(float('inf'))
-    right_motor.setPosition(float('inf'))
-    left_motor.setVelocity(0.0)
-    right_motor.setVelocity(0.0)
+
+    #CONTROLLER = DefaultController(lds, rds, left_motor, right_motor)
+    CONTROLLER = KeyboardController(keyboard, left_motor, right_motor)
 
     os.chdir("../..")
     root_dir = os.getcwd()
@@ -237,17 +296,7 @@ def main():
     StepCounter = 0
     while robot.step(TIME_STEP) != -1:
 
-        # read sensors
-        left_dist = lds.getValue()
-        right_dist = rds.getValue()
-
-        # compute behavior (user functions)
-        left = compute_left_speed(left_dist, right_dist)
-        right = compute_right_speed(left_dist, right_dist)
-
-        # actuate wheel motors
-        left_motor.setVelocity(left)
-        right_motor.setVelocity(right)
+        CONTROLLER.update()
 
         #read camera image and display it
         img = camera.getImageArray()
@@ -270,7 +319,7 @@ def main():
             # cv.imwrite(img_dir + f"Image No.{StepCounter//20}.png", img)
             plt.imshow(img, interpolation='nearest')
             plt.axis('off')
-            plt.savefig(os.path.join(img_dir, f"image-0-{StepCounter//20}.png"), bbox_inches='tight', pad_inches=0)
+            plt.savefig(os.path.join(img_dir, f"image-{FOV}-{StepCounter//20}.png"), bbox_inches='tight', pad_inches=0)
             print(f"Image No.{StepCounter//20} at step {StepCounter} saved")
 
         if StepCounter > 2000:
@@ -281,6 +330,8 @@ def main():
     np.savetxt(os.path.join(img_dir, "gt_positions.csv"), gt_position_array, delimiter=",", fmt='%s')
     np.savetxt(os.path.join(img_dir, "gt_orientations.csv"), gt_orientation_array, delimiter=",", fmt='%s')
     print("Ground truth data saved")
+
+
 
 if __name__ == "__main__":
     main()
