@@ -49,7 +49,7 @@ void calibrationParameters(VisualOdometryMonoOmnidirectional::parameters* pParam
     pParams->omnidirectional_calib.width = IMG_SIZE;
 
     // Matcher params
-    pParams->match.match_radius = 60;
+    pParams->match.match_radius = 40;
     pParams->match.half_resolution = 0;
 
     // Bucketing params

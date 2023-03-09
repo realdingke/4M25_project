@@ -30,7 +30,6 @@ rps.enable(timestep)
 # enable camera and recognition
 camera = robot.getDevice('camera1')
 camera.enable(timestep)
-camera.recognitionEnable(timestep)
 
 #enable imu
 imu = robot.getDevice('inertial unit')
@@ -262,7 +261,7 @@ class KeyboardController(object):
 
 def main():
     TIME_STEP = 32
-    FOV = 120
+    FOV = 50
 
 
 
@@ -272,6 +271,9 @@ def main():
 
     keyboard = Keyboard()
     keyboard.enable(TIME_STEP)
+
+    # Set FOV
+    camera.setFov(FOV / 180 * np.pi)
 
     # left_sensor = robot.getDevice("left_sensor")
     # right_sensor = robot.getDevice("right_sensor")
@@ -334,8 +336,8 @@ def main():
 
         StepCounter += 1
 
-    np.savetxt(os.path.join(img_dir, "gt_positions.csv"), gt_position_array, delimiter=",", fmt='%s')
-    np.savetxt(os.path.join(img_dir, "gt_orientations.csv"), gt_orientation_array, delimiter=",", fmt='%s')
+    np.savetxt(os.path.join(img_dir, f"gt_positions-{FOV}.csv"), gt_position_array, delimiter=",", fmt='%s')
+    np.savetxt(os.path.join(img_dir, f"gt_orientations-{FOV}.csv"), gt_orientation_array, delimiter=",", fmt='%s')
     print("Ground truth data saved")
 
 
