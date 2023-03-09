@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 FOV = 50
 CAMERA_HEIGHT = 0.12
 PLOT_STEPS = -1
+FLOOR_SIZE = (2, 2)
+CENTER = (0, 0)
 
 # Read ground truths
 gt_pos = open(f"gt_positions-{FOV}.csv").readlines()
@@ -36,7 +38,25 @@ for [pose, matches, inliers] in zip(lines[::3], lines[1::3], lines[2::3]):
 
 vo_pos = np.array(vo_pos) * CAMERA_HEIGHT
 
-plt.plot(gt_pos[:PLOT_STEPS,0], gt_pos[:PLOT_STEPS,2])
-plt.plot(vo_pos[:PLOT_STEPS,0], vo_pos[:PLOT_STEPS,2])
+plt.figure(figsize = (8,6))
+###no tick
+# plt.tick_params(left = False, right = False , labelleft = False ,
+#                 labelbottom = False, bottom = False)
+
+plt.scatter(CENTER[0], CENTER[1], s=5, c='r')
+plt.plot((CENTER[0] - FLOOR_SIZE[0]/2, CENTER[0] + FLOOR_SIZE[0]/2), (CENTER[1] + FLOOR_SIZE[0]/2, CENTER[1] + FLOOR_SIZE[0]/2), c='k')
+plt.plot((CENTER[0] - FLOOR_SIZE[0]/2, CENTER[0] + FLOOR_SIZE[0]/2), (CENTER[1] - FLOOR_SIZE[0]/2, CENTER[1] - FLOOR_SIZE[0]/2), c='k')
+plt.plot((CENTER[0] - FLOOR_SIZE[0]/2, CENTER[0] - FLOOR_SIZE[0]/2), (CENTER[1] - FLOOR_SIZE[0]/2, CENTER[1] + FLOOR_SIZE[0]/2), c='k')
+plt.plot((CENTER[0] + FLOOR_SIZE[0]/2, CENTER[0] + FLOOR_SIZE[0]/2), (CENTER[1] - FLOOR_SIZE[0]/2, CENTER[1] + FLOOR_SIZE[0]/2), c='k')
+plt.plot(gt_pos[:PLOT_STEPS,0], gt_pos[:PLOT_STEPS,2], c='g', label="groundtruth")
+plt.plot(vo_pos[:PLOT_STEPS,0], vo_pos[:PLOT_STEPS,2], c='b', label="VO")
 plt.axis('square')
+plt.xlim(-(FLOOR_SIZE[0]/2 + 0.5), FLOOR_SIZE[0]/2 + 0.5)
+plt.ylim(-(FLOOR_SIZE[0]/2 + 0.5), FLOOR_SIZE[0]/2 + 0.5)
+plt.legend()
+
+os.chdir("..")
+root_dir = os.getcwd()
+plt.savefig(os.path.join(root_dir, "VO-groundtruth trajectory plot.png"), bbox_inches='tight', pad_inches=0)
+
 plt.show()
