@@ -1,6 +1,6 @@
 #VRML_SIM R2023a utf8
 
-EXTERNPROTO "../protos/E-puck.proto"
+EXTERNPROTO "../protos/E-puck-project.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
@@ -11,8 +11,8 @@ WorldInfo {
   coordinateSystem "NUE"
 }
 Viewpoint {
-  orientation -0.08957670867052359 0.6841277633163485 0.723840601737376 3.802286508101403
-  position 0.15950231717475583 0.27812021491985395 -0.035783054946386214
+  orientation 0.2448823590239927 0.18574499857831775 0.951594149699327 4.7263764680736
+  position -0.1500992404299024 2.0923265393281683 -1.2209184590193187
 }
 TexturedBackground {
   texture "factory"
@@ -20,7 +20,7 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 DEF area RectangleArena {
-  translation -0.257628 -4.44089e-16 -0.192172
+  translation 0 -4.44089e-16 0
   rotation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0943951023931953
   floorSize 2 2
   floorTileSize 0.508 0.508
@@ -50,70 +50,9 @@ WoodenBox {
   size 0.2 0.2 0.2
   mass 0.5
 }
-DEF epuck E-puck {
-  hidden position_0_0 174.60085038966824
-  hidden position_0_1 164.47030519840314
-  hidden rotation_1 0 -1 0 1.3283382113601827
-  hidden rotation_2 0 1 0 1.1074872117338908
+DEF epuck E-puck-project {
   translation 0.0299166 -0.000416684 0.140429
   rotation 0.184958114426782 0.6950185818320285 0.6947946940038368 -2.7775074069581827
-  controller "mapping"
-  supervisor TRUE
-  camera_fieldOfView 0.4
-  camera_width 50
-  camera_height 50
-  turretSlot [
-    InertialUnit {
-      rotation 0 1 0 3.14
-    }
-    DEF front_ds DistanceSensor {
-      translation 0 0 -0.045
-      rotation 0 1 0 1.5708
-      name "front_ds"
-      recognitionColors [
-        0 0 0
-      ]
-      lookupTable [
-        0 0 0
-        1.27 1.27 0
-      ]
-    }
-    DEF right_ds DistanceSensor {
-      translation 0.035 -0.01 -0.01
-      name "right_ds"
-      lookupTable [
-        0 0 0
-        1.27 1.27 0
-      ]
-    }
-    DEF left_ds DistanceSensor {
-      translation -0.035 -0.01 -0.01
-      rotation 0 1 0 3.14159
-      name "left_ds"
-      lookupTable [
-        0 0 0
-        1.27 1.27 0
-      ]
-    }
-    Camera {
-      translation 0 0 0.12
-      rotation 0 1 0 0
-      name "camera1"
-      recognitionColors [
-        1 1 0
-      ]
-      fieldOfView 0.8726646259971648
-      width 256
-      height 256
-      projection "spherical"
-      zoom Zoom {
-        maxFieldOfView 6.28
-        minFieldOfView 0
-      }
-      recognition Recognition {
-      }
-    }
-  ]
 }
 WoodenBox {
   translation -0.10697600000853617 0.04980379999999959 -0.28006997900517033

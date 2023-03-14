@@ -69,7 +69,7 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/lights/protos/DoubleFluorescentLamp.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/chairs/protos/WoodenChair.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/chairs/protos/OfficeChair.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "../protos/E-puck-project.proto"
 
 WorldInfo {
   info [
@@ -158,71 +158,9 @@ SquareManhole {
   rotation 0 0 -1 -1.5707953071795862
   name "manhole(2)"
 }
-DEF epuck E-puck {
-  hidden position_0_0 433.60683699329195
-  hidden position_0_1 405.0100489000592
-  hidden linearVelocity_0 0.10415351069896774 0.05970538486923798 -2.1040106664489018e-08
-  hidden angularVelocity_0 -0.0017522746733759486 0.003056764114232708 -2.2079332460166196e-09
-  hidden rotation_1 0 -1 0 6.216134509279104
-  hidden linearVelocity_1 0.10416879494474149 0.05971414648691903 -3.684550445184636e-11
-  hidden angularVelocity_1 -2.985707255624577 5.208439811637145 9.482360275766162e-08
-  hidden rotation_2 0 1 0 2.886189240565655
-  hidden linearVelocity_2 0.10416879484539072 0.059714146428874765 7.087206368188138e-11
-  hidden angularVelocity_2 -2.985707414602349 5.208439720498784 -9.627126798954676e-08
+DEF epuck E-puck-project {
   translation 1.664538158495168 -3.5836225494412197 -6.394609512920535e-05
   rotation 0.000631588334130303 -0.002371746118322205 0.999996987953727 0.5205151661711577
-  controller "mapping"
-  supervisor TRUE
-  camera_width 50
-  camera_height 50
-  turretSlot [
-    InertialUnit {
-      rotation 0 1 0 3.14
-    }
-    DEF front_ds DistanceSensor {
-      translation 0 0 -0.045
-      rotation 0 1 0 1.5708
-      name "front_ds"
-      recognitionColors [
-        0 0 0
-      ]
-      lookupTable [
-        0 0 0
-        1.27 1.27 0
-      ]
-    }
-    DEF right_ds DistanceSensor {
-      translation 0.035 -0.01 -0.01
-      name "right_ds"
-      lookupTable [
-        0 0 0
-        1.27 1.27 0
-      ]
-    }
-    DEF left_ds DistanceSensor {
-      translation -0.035 -0.01 -0.01
-      rotation 0 1 0 3.14159
-      name "left_ds"
-      lookupTable [
-        0 0 0
-        1.27 1.27 0
-      ]
-    }
-    Camera {
-      translation 0 0 0.12
-      rotation 0 1 0 0
-      name "camera1"
-      recognitionColors [
-        1 1 0
-      ]
-      fieldOfView 2.093
-      width 256
-      height 256
-      projection "spherical"
-      recognition Recognition {
-      }
-    }
-  ]
 }
 DEF ROOF Transform {
   translation 0 -5.72 4.76

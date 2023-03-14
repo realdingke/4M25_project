@@ -6,7 +6,7 @@ import os
 import pickle
 import numpy as np
 # import cv2 as cv
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 
 TIME_STEP = 32
 
@@ -394,7 +394,7 @@ def execute(supervisor, world, fov, maxsteps=2000):
             RECORDER.update(StepCounter)
 
         #read camera image and display it
-        img = camera.getImageArray()
+        # img = camera.getImageArray()
         # img_l = cv.imread(img_l, cv.IMREAD_GRAYSCALE)
         # img_r = cv.imread(img_r, cv.IMREAD_GRAYSCALE)
         # # img_l = cv.cvtColor(img_l, cv.COLOR_BGR2GRAY)
@@ -412,9 +412,11 @@ def execute(supervisor, world, fov, maxsteps=2000):
             gt_orientation_array.append(np.array(gt_orientation).flatten())
 
             # cv.imwrite(img_dir + f"Image No.{StepCounter//20}.png", img)
-            #plt.imshow(img, interpolation='nearest')
-            plt.axis('off')
-            plt.savefig(os.path.join(img_dir, f"image-{world}-{fov}-{StepCounter//20}.png"), bbox_inches='tight', pad_inches=0)
+            # plt.imshow(img, interpolation='nearest')
+            # plt.axis('off')
+            # plt.savefig(os.path.join(img_dir, f"image-{world}-{fov}-{StepCounter//20}.png"), bbox_inches='tight', pad_inches=0)
+
+            camera.saveImage(os.path.join(img_dir, f"image-{world}-{fov}-{StepCounter//20}.png"), -1)
 
             print(f"Image No.{StepCounter//20} at step {StepCounter} saved")
 
@@ -433,8 +435,8 @@ def execute(supervisor, world, fov, maxsteps=2000):
 
 def main():
     run_all = False
-    worlds = ["world_downwardcam.wbt", "hall.wbt"]
-    fovs = [50, 120]
+    worlds = ["world_downwardcam.wbt", "hall.wbt", "city.wbt", "complete_apartment.wbt", "village_realistic.wbt"]
+    fovs = [40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220]
 
     os.chdir("../..")
     localpath = lambda f: os.path.join(os.getcwd()+"/worlds", f)
@@ -454,7 +456,7 @@ def main():
         pickle.dump([0, 0], open(localpath('state.p'), 'wb'))
         supervisor.worldLoad(localpath(worlds[0]))
 
-    execute(supervisor, worlds[state[0]], fovs[state[1]], maxsteps=100)
+    execute(supervisor, worlds[state[0]], fovs[state[1]])#, maxsteps=100)
 
     if state[0] == len(worlds) - 1 \
         and state[1] == len(fovs) - 1:

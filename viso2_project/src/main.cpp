@@ -14,7 +14,7 @@
 
 #include <viso_mono_omnidirectional.h>
 
-#define IMG_SIZE 369
+#define IMG_SIZE 256
 
 
 
@@ -23,7 +23,7 @@ void calibrationParameters(VisualOdometryMonoOmnidirectional::parameters* pParam
     // Taylor expansion of: r cot (r a)
     double a = M_PI * f / (180 * IMG_SIZE);
     pParams->omnidirectional_calib.length_pol = 8;
-    pParams->omnidirectional_calib.pol[0] = M_PI * f / 180;//std::pow(a, -1.0);
+    pParams->omnidirectional_calib.pol[0] = M_PI * f / 180.0;//std::pow(a, -1.0);
     pParams->omnidirectional_calib.pol[1] = 0;
     pParams->omnidirectional_calib.pol[2] = std::pow(a, 1.0) / 3;
     pParams->omnidirectional_calib.pol[3] = 0;
@@ -49,7 +49,7 @@ void calibrationParameters(VisualOdometryMonoOmnidirectional::parameters* pParam
     pParams->omnidirectional_calib.width = IMG_SIZE;
 
     // Matcher params
-    pParams->match.match_radius = 40;
+    pParams->match.match_radius = 50;
     pParams->match.half_resolution = 0;
 
     // Bucketing params
@@ -59,7 +59,7 @@ void calibrationParameters(VisualOdometryMonoOmnidirectional::parameters* pParam
 // Load as grayscale 8bit
 bool loadImage(int fov, int step, cv::Mat* pImg) {
     std::stringstream ss;
-    ss << "image-" << fov << "-" << step << ".png";
+    ss << "image--" << fov << "-" << step << ".png";
 
     *pImg = cv::imread(ss.str());
     if (pImg->data == nullptr) // Failed
