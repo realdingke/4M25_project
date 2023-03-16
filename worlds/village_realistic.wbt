@@ -130,8 +130,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.07605919370926029 -0.965954230755679 -0.24728005001920775 5.605930343429131
-  position 81.3634265085679 -530.6845864996785 71.50898673951473
+  orientation 0.37299117333364046 -0.29291253082315366 -0.8803861845247056 4.337928861012729
+  position 209.96073012610904 -624.6540225618535 60.203682167161695
   near 3
 }
 TexturedBackground {
@@ -143,8 +143,18 @@ Fog {
   visibilityRange 2500
 }
 DEF epuck E-puck-project {
-  translation 0.0299166 -0.000416684 0.140429
-  rotation 0.184958114426782 0.6950185818320285 0.6947946940038368 -2.7775074069581827
+  hidden position_0_0 174.6008503957197
+  hidden position_0_1 164.47030520478268
+  hidden linearVelocity_0 -2.0529346995719917e-05 -0.00016372820716330683 1.9419548533229908e-05
+  hidden angularVelocity_0 0.010915253702908984 -0.001368628079266909 -2.0452436204436607e-08
+  hidden rotation_1 0 -1 0 1.3283382053087178
+  hidden linearVelocity_1 -2.7372628058981024e-05 -0.0002183041895542667 1.92421045448824e-05
+  hidden angularVelocity_1 0.010915253667652069 -0.001368628069627118 -2.0488217359950377e-08
+  hidden rotation_2 0 1 0 1.1074872181134277
+  hidden linearVelocity_2 -2.7372281685151344e-05 -0.00021830423222104215 1.9859194773591384e-05
+  hidden angularVelocity_2 0.010915253666383323 -0.001368628079728994 -2.0416658997412133e-08
+  translation 193.67601573979022 -561.4910994507346 -0.010003480022270417
+  rotation -0.0010397910392590034 0.001178763272313039 0.9999987646751082 1.4471405571154647
 }
 Floor {
   translation 207 -520 -0.01
@@ -322,31 +332,37 @@ DEF FLOWERS Solid {
 GenericTrafficLight {
   translation 233.89 -388.517 0
   rotation 0 0 1 1.5708
+  state "green"
 }
 GenericTrafficLight {
   translation 241.12 -405.858 0
   rotation 0 0 1 4.71239
   name "generic traffic light(1)"
+  state "green"
 }
 GenericTrafficLight {
   translation 112.798 -595.628 0
   rotation 0 0 -1 1.30899
   name "generic traffic light(2)"
+  state "green"
 }
 GenericTrafficLight {
   translation 176.064 -682.317 0
   rotation 0 0 1 3.1416
   name "generic traffic light(3)"
+  state "green"
 }
 GenericTrafficLight {
   translation 183.807 -672.925 0
   rotation 0 0 1 3.1416
   name "generic traffic light(4)"
+  state "green"
 }
 GenericTrafficLight {
   translation 102.396 -586.288 0
   rotation 0 0 1 1.8326
   name "generic traffic light(5)"
+  state "green"
 }
 SpeedLimitSign {
   translation 254.139 -647.508 0

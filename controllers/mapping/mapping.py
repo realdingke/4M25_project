@@ -298,15 +298,22 @@ class ReplayController(object):
     def __init__(self, lm, rm, savefile):
         self.lm = lm
         self.rm = rm
+        lm.setPosition(float('inf'))
+        lm.setVelocity(0.0)
+        rm.setPosition(float('inf'))
+        rm.setVelocity(0.0)
         self.savefile = open(savefile, "r")
         
         self.getcmd()
         
     def getcmd(self):
-        line = self.savefile.read().split()
-        self.nextstep = line[0]
-        self.nextl = line[1]
-        self.nextr = line[2]
+        line = self.savefile.readline().split(' ')
+        if line == [""]:
+            self.nextstep = 9999999999
+            return
+        self.nextstep = int(line[0])
+        self.nextl = float(line[1])
+        self.nextr = float(line[2])
         
     def update(self, step):
         if step != self.nextstep: return
@@ -367,11 +374,12 @@ def execute(supervisor, world, fov, maxsteps=2000):
     left_motor = robot.getDevice('left wheel motor')
     right_motor = robot.getDevice('right wheel motor')
 
-    CONTROLLER = RuleBasedController(lds, rds, left_motor, right_motor)
+    #CONTROLLER = RuleBasedController(lds, rds, left_motor, right_motor)
     #CONTROLLER = KeyboardController(keyboard, left_motor, right_motor)
-    #CONTROLLER = ReplayController(left_motor, right_motor, f"{world}.txt")
+    CONTROLLER = ReplayController(left_motor, right_motor, f"{world}.txt")
     
-    RECORDER = ReplayRecorder(left_motor, right_motor, f"{world}.txt")
+    RECORDER = None
+    #RECORDER = ReplayRecorder(left_motor, right_motor, f"hall.wbt.txt")
 
     root_dir = os.getcwd()
     img_dir = os.path.join(root_dir, "imgs")
@@ -434,9 +442,11 @@ def execute(supervisor, world, fov, maxsteps=2000):
         print("Saved path")
 
 def main():
-    run_all = False
-    worlds = ["world_downwardcam.wbt", "hall.wbt", "city.wbt", "complete_apartment.wbt", "village_realistic.wbt"]
-    fovs = [40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220]
+    run_all = True
+    worlds = ["world_downwardcam.wbt", "city.wbt", "complete_apartment.wbt", "village_realistic.wbt"]#["world_downwardcam.wbt", "hall.wbt", "city.wbt", "complete_apartment.wbt", "village_realistic.wbt"]
+    fovs = [70, 85]#[40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220]
+
+    maxsteps = 4000
 
     os.chdir("../..")
     localpath = lambda f: os.path.join(os.getcwd()+"/worlds", f)
@@ -444,7 +454,7 @@ def main():
     supervisor = Supervisor()  # create Supervisor instance
 
     if not run_all:
-        execute(supervisor, "", fovs[0])
+        execute(supervisor, "", fovs[0], maxsteps=maxsteps)
         return
     
     try:
@@ -456,12 +466,13 @@ def main():
         pickle.dump([0, 0], open(localpath('state.p'), 'wb'))
         supervisor.worldLoad(localpath(worlds[0]))
 
-    execute(supervisor, worlds[state[0]], fovs[state[1]])#, maxsteps=100)
+    execute(supervisor, worlds[state[0]], fovs[state[1]], maxsteps=maxsteps)
 
     if state[0] == len(worlds) - 1 \
         and state[1] == len(fovs) - 1:
         print("Finished gathering data")
         os.remove(localpath('state.p'))
+        supervisor.simulationQuit(0)
         return
     
     state[1] += 1

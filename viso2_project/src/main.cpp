@@ -7,6 +7,9 @@
 #include <fstream>
 #include <iostream>
 #include <cmath>
+#include <utility>
+#include <mutex>
+#include <thread>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -17,6 +20,9 @@
 #define IMG_SIZE 256
 
 
+
+std::vector<std::pair<std::string, int>> jobs;
+std::mutex jobs_mtx;
 
 void calibrationParameters(VisualOdometryMonoOmnidirectional::parameters* pParams, double f) {
 
@@ -57,9 +63,9 @@ void calibrationParameters(VisualOdometryMonoOmnidirectional::parameters* pParam
 }
 
 // Load as grayscale 8bit
-bool loadImage(int fov, int step, cv::Mat* pImg) {
+bool loadImage(std::string world, int fov, int step, cv::Mat* pImg) {
     std::stringstream ss;
-    ss << "image--" << fov << "-" << step << ".png";
+    ss << "image-" << world << "-" << fov << "-" << step << ".png";
 
     *pImg = cv::imread(ss.str());
     if (pImg->data == nullptr) // Failed
@@ -81,20 +87,20 @@ Matrix processImage(VisualOdometryMonoOmnidirectional* pOdom, int step, cv::Mat*
     return Matrix::inv(pOdom->getMotion());
 }
 
-void fovSeries(int fov) {
+void fovSeries(std::string world, int fov) {
     VisualOdometryMonoOmnidirectional::parameters params;
     calibrationParameters(&params, fov);
     VisualOdometryMonoOmnidirectional odom = VisualOdometryMonoOmnidirectional(params);
 
     std::stringstream ss;
-    ss << "out-" << fov << ".txt";
+    ss << "out-" << world << "-" << fov << ".txt";
     std::ofstream output(ss.str());
 
     cv::Mat img;
     Matrix m;
     int nMatch;
     int nInliers;
-    for (int i = 0; loadImage(fov, i, &img); ++i) {
+    for (int i = 0; loadImage(world, fov, i, &img); ++i) {
         m = processImage(&odom, i, &img);
         if (i == 0) continue;
         nMatch = odom.getNumberOfMatches();
@@ -107,19 +113,56 @@ void fovSeries(int fov) {
         output << std::endl;
         output << nMatch << std::endl;
         output << nInliers << std::endl;
+        output << odom.ave_movement << std::endl;
+    }
+}
+
+void process() {
+    while(true) {
+        jobs_mtx.lock();
+        if (jobs.empty()) {jobs_mtx.unlock(); return;}
+        std::pair<std::string, int> job = jobs.back();
+        jobs.pop_back();
+        jobs_mtx.unlock();
+
+        std::cout << "Starting on " << job.first << ", " << job.second << " degrees" << std::endl;
+        fovSeries(job.first, job.second);
     }
 }
 
 int main() {
-    std::vector<int> fovs;
     std::ifstream fovFile("fovs.txt");
+
+    std::vector<std::string> worlds;
+    int nWorlds;
+    std::string buff;
+    fovFile >> nWorlds;
+    std::getline(fovFile, buff);
+    for (int i = 0; i < nWorlds; ++i) {
+        std::getline(fovFile, buff);
+        buff.erase(buff.find_last_not_of(" \n\t\r") + 1);
+        worlds.push_back(buff);
+    }
+
+    std::vector<int> fovs;
     int fov;
     while (fovFile >> fov) fovs.push_back(fov);
 
     // Process separately each fov with data gathered
-    for (int fov : fovs) {
-        std::cout << "Starting on " << fov << " degrees" << std::endl;
-        fovSeries(fov);
+    for (std::string world : worlds)
+        for (int fov : fovs) {
+            jobs.push_back(std::make_pair(world, fov));
+        }
+
+    std::vector<std::thread> workers;
+    for (int i = 0; i < 1; ++i) {
+        std::thread t(process);
+        workers.push_back(std::move(t));
     }
+
+    for (int i = 0; i < workers.size(); ++i) {
+        workers[i].join();
+    }
+    
     std::cout << "Done!" << std::endl;
 }
