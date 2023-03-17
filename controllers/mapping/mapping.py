@@ -443,8 +443,8 @@ def execute(supervisor, world, fov, maxsteps=2000):
 
 def main():
     run_all = True
-    worlds = ["world_downwardcam.wbt", "city.wbt", "complete_apartment.wbt", "village_realistic.wbt"]#["world_downwardcam.wbt", "hall.wbt", "city.wbt", "complete_apartment.wbt", "village_realistic.wbt"]
-    fovs = [70, 85]#[40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220]
+    worlds = ["world_downwardcam.wbt", "hall.wbt", "city.wbt", "complete_apartment.wbt", "village_realistic.wbt"]
+    fovs = [40, 55, 70, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220]
 
     maxsteps = 4000
 
