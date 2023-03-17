@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy import spatial
 from sklearn.linear_model import HuberRegressor
+from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 WORLDS = ["world_downwardcam.wbt", "hall.wbt", "city.wbt", "complete_apartment.wbt", "village_realistic.wbt"]
@@ -129,6 +130,11 @@ def readDataSeries(world, fov):
     err_rot = np.abs(np.arctan2(np.sin(vo_drot-gt_drot), np.cos(vo_drot-gt_drot))) # Angular differences mapped to [-pi, pi]
     err_trans = vo_dpos - gt_dpos
     err_trans = np.sqrt(err_trans[:,0]**2 + err_trans[:,1]**2)
+    
+    # Trajectory RMSE
+
+    rmse = mean_squared_error(gt_dpos, vo_dpos, squared=False)
+    # print("RMSE:", rmse*100)
 
     return pd.DataFrame({"vo_match":vo_match, "vo_inliers":vo_inliers, "gt_dposx":gt_dpos[:,0],
             "gt_dposy":gt_dpos[:,1], "gt_drot":gt_drot, "vo_dposx":vo_dpos[:,0], "vo_dposy":vo_dpos[:,1],
